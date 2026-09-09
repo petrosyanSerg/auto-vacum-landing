@@ -45,8 +45,3 @@ export function track(event: AnalyticsEvent, params: Params = {}): void {
     // Analytics must never break an interaction the customer is in the middle of.
   }
 }
-
-/** Convenience wrapper for anchors: track, then let the navigation proceed. */
-export function trackClick(event: AnalyticsEvent, params?: Params) {
-  return () => track(event, params);
-}
