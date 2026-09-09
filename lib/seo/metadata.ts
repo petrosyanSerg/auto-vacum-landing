@@ -13,6 +13,8 @@ interface PageMetaInput {
   path: string;
   title: string;
   description: string;
+  /** Page-specific preview card, e.g. `/og-pdr.jpg`. Falls back to the default. */
+  image?: string;
 }
 
 /**
@@ -20,9 +22,10 @@ interface PageMetaInput {
  * Graph can never drift apart. `title` is the page-specific part; the layout
  * template appends the business name.
  */
-export function buildMetadata({ locale, path, title, description }: PageMetaInput): Metadata {
+export function buildMetadata({ locale, path, title, description, image }: PageMetaInput): Metadata {
   const dict = getDictionary(locale);
   const url = absoluteUrl(locale, path);
+  const ogImage = image ?? OG_IMAGE;
 
   return {
     title,
@@ -39,13 +42,13 @@ export function buildMetadata({ locale, path, title, description }: PageMetaInpu
       url,
       locale: localeMeta[locale].ogLocale,
       alternateLocale: locales.filter((l) => l !== locale).map((l) => localeMeta[l].ogLocale),
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: dict.meta.ogImageAlt }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: dict.meta.ogImageAlt }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [OG_IMAGE],
+      images: [ogImage],
     },
   };
 }

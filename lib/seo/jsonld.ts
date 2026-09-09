@@ -11,7 +11,8 @@ import {
 } from '@/config/business';
 import { serviceSlugs } from '@/content/services';
 import { videos, videoWatchUrl } from '@/content/videos';
-import type { Locale } from '@/lib/i18n/config';
+import { works } from '@/content/works';
+import { locales, localeMeta, type Locale } from '@/lib/i18n/config';
 import { absoluteUrl, servicePath } from '@/lib/i18n/routes';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import type { QA, ServiceSlug } from '@/content/translations/types';
@@ -27,6 +28,13 @@ import type { QA, ServiceSlug } from '@/content/translations/types';
  */
 
 const LOCAL_BUSINESS_ID = `${SITE_URL}/#business`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+
+/** Stable @id for a document, so WebPage nodes can be referenced across the graph. */
+const pageId = (locale: Locale, path: string) => `${absoluteUrl(locale, path)}#webpage`;
+
+/** Every language this site is actually published in. */
+const SITE_LANGUAGES = locales.map((l) => localeMeta[l].htmlLang);
 
 export function localBusinessSchema(locale: Locale) {
   const dict = getDictionary(locale);
@@ -70,6 +78,19 @@ export function localBusinessSchema(locale: Locale) {
       { '@type': 'AdministrativeArea', name: ADDRESS.addressRegion[locale] },
     ],
     sameAs: [SOCIAL.instagram, SOCIAL.youtube, SOCIAL.listam],
+    // One reachable channel, described honestly: a phone, answered in the
+    // languages this site is published in. No email or chat desk is claimed.
+    contactPoint: {
+      '@type': 'ContactPoint',
+      '@id': `${SITE_URL}/#contact`,
+      contactType: 'customer service',
+      telephone: PHONE_E164,
+      areaServed: ADDRESS.addressCountry,
+      availableLanguage: SITE_LANGUAGES,
+    },
+    knowsLanguage: SITE_LANGUAGES,
+    // Verified from the owner's own List.am seller profile and YouTube channel.
+    employee: { '@type': 'Person', name: BRAND.masterName },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: dict.servicesSection.title,
@@ -90,7 +111,7 @@ export function websiteSchema(locale: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
+    '@id': WEBSITE_ID,
     name: dict.meta.siteName,
     url: absoluteUrl(locale, '/'),
     inLanguage: locale,
@@ -110,11 +131,93 @@ export function serviceSchema(locale: Locale, slug: ServiceSlug) {
     url: absoluteUrl(locale, servicePath(slug)),
     serviceType: service.name,
     provider: { '@id': LOCAL_BUSINESS_ID },
-    areaServed: {
-      '@type': 'AdministrativeArea',
-      name: ADDRESS.addressRegion[locale],
+    areaServed: [
+      { '@type': 'City', name: ADDRESS.addressLocality[locale] },
+      { '@type': 'AdministrativeArea', name: ADDRESS.addressRegion[locale] },
+    ],
+    // The only booking channel that exists: the phone, and the page itself.
+    availableChannel: {
+      '@type': 'ServiceChannel',
+      servicePhone: { '@type': 'ContactPoint', telephone: PHONE_E164 },
+      serviceUrl: absoluteUrl(locale, servicePath(slug)),
     },
     inLanguage: locale,
+  };
+}
+
+/**
+ * The document node: what ties one URL to the site and the business, and the
+ * node an answer engine reads to decide what a page is *about*. `type` narrows
+ * to ContactPage / CollectionPage / FAQPage where that is what the page is.
+ */
+export function webPageSchema({
+  locale,
+  path,
+  name,
+  description,
+  type = 'WebPage',
+  primaryImage,
+}: {
+  locale: Locale;
+  path: string;
+  name: string;
+  description: string;
+  type?: 'WebPage' | 'ContactPage' | 'CollectionPage' | 'FAQPage' | 'AboutPage';
+  /** Site-relative image path, e.g. `/images/works/roof-panel-restored.webp`. */
+  primaryImage?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': type,
+    '@id': pageId(locale, path),
+    url: absoluteUrl(locale, path),
+    name,
+    description,
+    inLanguage: localeMeta[locale].htmlLang,
+    isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': LOCAL_BUSINESS_ID },
+    ...(primaryImage
+      ? {
+          primaryImageOfPage: {
+            '@type': 'ImageObject',
+            contentUrl: `${SITE_URL}${primaryImage}`,
+          },
+        }
+      : {}),
+  };
+}
+
+/**
+ * The portfolio as machine-readable evidence. Each frame carries the panel it
+ * shows, whether it is a before/after/in-progress state, and the clip it was
+ * cut from — so the visual proof is legible without opening the images.
+ */
+export function worksGallerySchema(locale: Locale) {
+  const dict = getDictionary(locale);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ImageGallery',
+    '@id': `${SITE_URL}/#works`,
+    name: dict.works.h1,
+    description: dict.works.metaDescription,
+    inLanguage: localeMeta[locale].htmlLang,
+    associatedMedia: works.map((item) => {
+      const caption = dict.works.items[item.id];
+      return {
+        '@type': 'ImageObject',
+        contentUrl: `${SITE_URL}/images/works/${item.image}.webp`,
+        name: caption?.title ?? dict.works.h1,
+        caption: caption?.note ?? dict.works.lead,
+        description: `${dict.works.categories[item.category]} — ${
+          dict.common.damageState[item.state]
+        }`,
+        width: item.width,
+        height: item.height,
+        creator: { '@id': LOCAL_BUSINESS_ID },
+        isBasedOn: videoWatchUrl(item.video),
+      };
+    }),
   };
 }
 

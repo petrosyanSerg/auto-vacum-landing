@@ -6,7 +6,7 @@ import { isLocale, locales, localePath, type Locale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath, servicePath } from '@/lib/i18n/routes';
-import { breadcrumbSchema, faqSchema, serviceSchema } from '@/lib/seo/jsonld';
+import { breadcrumbSchema, faqSchema, serviceSchema, webPageSchema } from '@/lib/seo/jsonld';
 import { isServiceSlug, serviceImage, serviceSlugs } from '@/content/services';
 import { works } from '@/content/works';
 import { ADDRESS } from '@/config/business';
@@ -43,6 +43,7 @@ export async function generateMetadata({
     path: servicePath(slug),
     title: service.metaTitle,
     description: service.metaDescription,
+    image: `/og-${slug}.jpg`,
   });
 }
 
@@ -167,6 +168,13 @@ export default async function ServicePage({
 
       <JsonLd
         data={[
+          webPageSchema({
+            locale: typedLocale,
+            path: servicePath(slug),
+            name: service.h1,
+            description: service.metaDescription,
+            primaryImage: `/images/works/${serviceImage[slug]}.webp`,
+          }),
           serviceSchema(typedLocale, slug),
           faqSchema(service.faq),
           breadcrumbSchema(typedLocale, [

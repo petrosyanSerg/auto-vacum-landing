@@ -5,7 +5,7 @@ import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
-import { breadcrumbSchema, videoListSchema } from '@/lib/seo/jsonld';
+import { breadcrumbSchema, videoListSchema, webPageSchema, worksGallerySchema } from '@/lib/seo/jsonld';
 import { works } from '@/content/works';
 
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -69,6 +69,15 @@ export default async function WorksPage({ params }: { params: Promise<{ locale: 
 
       <JsonLd
         data={[
+          webPageSchema({
+            locale: typedLocale,
+            path: routePath.works,
+            name: dict.works.h1,
+            description: dict.works.metaDescription,
+            type: 'CollectionPage',
+            primaryImage: '/images/works/roof-panel-restored.webp',
+          }),
+          worksGallerySchema(typedLocale),
           breadcrumbSchema(typedLocale, [
             { name: dict.nav.home, path: routePath.home },
             { name: dict.works.h1, path: routePath.works },

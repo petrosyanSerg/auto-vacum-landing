@@ -14,6 +14,8 @@ const SRC = path.join(process.cwd(), '_source-media', 'yt');
 const OUT_WORKS = path.join(process.cwd(), 'public', 'images', 'works');
 const OUT_VIDEO = path.join(process.cwd(), 'public', 'images', 'video');
 
+const SRC_PAIRS = path.join(process.cwd(), '_source-media', 'pairs');
+
 /** Portrait work stills: 720x1280 source, cropped to a 4:5 editorial crop. */
 const works = [
   ['qxpI-JVINtg_oar1', 'dent-assessment-marked-rear-quarter', 'north'],
@@ -27,6 +29,17 @@ const works = [
   ['PHrzsklW36M_oar2', 'reflection-line-panel-check', 'centre'],
   ['skLR9KHU02Y_oar2', 'restored-front-wing-dark-car', 'centre'],
   ['qxpI-JVINtg_oar3', 'dent-mapping-close-up', 'centre'],
+];
+
+/**
+ * Side-by-side before/after photographs shot in the workshop. Each source file
+ * holds both frames in one square image, so it is split down the middle and
+ * each half cropped to the same 4:5 window the works stills use — the hero
+ * slider wipes one frame over the other, so the halves must stay aligned.
+ * [file, output prefix, half width, left edge of the right half]
+ */
+const pairs = [
+  ['arch-crease-pair', 'arch-crease', 474, 486],
 ];
 
 /** Video poster frames, 16:9 for the lazy-loaded video wall. */
@@ -49,6 +62,19 @@ async function main() {
       .webp({ quality: 80, effort: 6 })
       .toFile(path.join(OUT_WORKS, `${name}.webp`));
     console.log(`works/${name}.webp`);
+  }
+
+  for (const [src, name, half, right] of pairs) {
+    const file = path.join(SRC_PAIRS, `${src}.jpg`);
+    if (!(await exists(file))) { console.warn(`skip (missing): ${src}`); continue; }
+    for (const [side, left] of [['before', 0], ['after', right]]) {
+      await sharp(file)
+        .extract({ left, top: 184, width: half, height: Math.round(half * 1.25) })
+        .resize(1000, 1250, { fit: 'fill' })
+        .webp({ quality: 82, effort: 6 })
+        .toFile(path.join(OUT_WORKS, `${name}-${side}.webp`));
+      console.log(`works/${name}-${side}.webp`);
+    }
   }
 
   for (const id of videos) {

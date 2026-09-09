@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { defaultLocale, localePath } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
@@ -8,6 +9,9 @@ import styles from './not-found.module.scss';
  * Rendered outside a resolved locale, so it falls back to Armenian and offers
  * the two things a lost visitor can still use: the home page and the phone.
  */
+/** A 404 is never a document worth indexing. */
+export const metadata: Metadata = { robots: { index: false, follow: true } };
+
 export default function NotFound() {
   const dict = getDictionary(defaultLocale);
 

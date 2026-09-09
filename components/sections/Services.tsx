@@ -55,7 +55,9 @@ export function Services({
               <div className={styles.thumb}>
                 <Image
                   src={`/images/works/${serviceImage[slug]}.webp`}
-                  alt=""
+                  // A real photo of the workshop's own work, not decoration, so
+                  // it carries the same localised caption the gallery uses.
+                  alt={dict.works.items[serviceImage[slug]]?.title ?? service.name}
                   width={1000}
                   height={1250}
                   sizes="(min-width: 1200px) 22vw, (min-width: 720px) 45vw, 92vw"

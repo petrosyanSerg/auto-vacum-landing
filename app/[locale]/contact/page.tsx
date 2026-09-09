@@ -5,7 +5,7 @@ import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
-import { breadcrumbSchema } from '@/lib/seo/jsonld';
+import { breadcrumbSchema, webPageSchema } from '@/lib/seo/jsonld';
 import {
   ADDRESS,
   LEAD_ENDPOINT,
@@ -119,10 +119,19 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
       <FinalCta locale={typedLocale} dict={dict} />
 
       <JsonLd
-        data={breadcrumbSchema(typedLocale, [
-          { name: dict.nav.home, path: routePath.home },
-          { name: dict.contact.h1, path: routePath.contact },
-        ])}
+        data={[
+          webPageSchema({
+            locale: typedLocale,
+            path: routePath.contact,
+            name: dict.contact.h1,
+            description: dict.contact.metaDescription,
+            type: 'ContactPage',
+          }),
+          breadcrumbSchema(typedLocale, [
+            { name: dict.nav.home, path: routePath.home },
+            { name: dict.contact.h1, path: routePath.contact },
+          ]),
+        ]}
       />
     </>
   );

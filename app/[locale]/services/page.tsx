@@ -5,7 +5,7 @@ import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
-import { breadcrumbSchema, serviceSchema } from '@/lib/seo/jsonld';
+import { breadcrumbSchema, serviceSchema, webPageSchema } from '@/lib/seo/jsonld';
 import { serviceSlugs } from '@/content/services';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -68,6 +68,13 @@ export default async function ServicesPage({
 
       <JsonLd
         data={[
+          webPageSchema({
+            locale: typedLocale,
+            path: routePath.services,
+            name: dict.servicesSection.h1,
+            description: dict.servicesSection.metaDescription,
+            type: 'CollectionPage',
+          }),
           breadcrumbSchema(typedLocale, [
             { name: dict.nav.home, path: routePath.home },
             { name: dict.servicesSection.h1, path: routePath.services },

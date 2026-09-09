@@ -11,7 +11,9 @@
   `x-default` pointing at Armenian.
 - `sitemap.xml` generated from the same route registry the navigation reads, so
   a page cannot ship in the menu while missing from the sitemap.
-- `robots.txt` with an explicit Yandex block and a `Host` directive.
+- `robots.txt` with a deliberate, documented policy: fourteen search and
+  answer-engine crawlers allowed by name, build output and the lead API
+  disallowed. Reasoning in `docs/ai-crawler-policy.md`.
 - `manifest.webmanifest`, SVG favicon, 180px Apple touch icon.
 - Open Graph and Twitter card on every page, with a 1200×630 preview image.
 - Semantic HTML: one `h1` per page, ordered headings, `main`/`header`/`nav`/
@@ -32,6 +34,12 @@ business:
 | `FAQPage` | home, FAQ page, each service page |
 | `BreadcrumbList` | every inner page |
 | `ItemList` of `VideoObject` | home and works |
+| `WebPage` / `CollectionPage` / `ContactPage` | every page |
+| `ImageGallery` of `ImageObject` | works |
+
+Every node is joined by `@id`: a document declares the site it is part of and
+the business it is about, the site names the business as publisher, and each
+service names the business as provider.
 
 Absent by design: `geo`, `openingHoursSpecification`, `priceRange`,
 `aggregateRating`. None of those is published by the business, and inventing
@@ -77,6 +85,13 @@ single answerable document.
 - Keep hedged language ("often", "when suitable", "usually") in the copy.
   Absolute claims are both a credibility problem and a claim the workshop cannot
   stand behind on the phone.
+
+## Audit
+
+The full audit, with the verification numbers and the owner's manual actions, is
+in `SEO-AEO-GEO-AUDIT.md`. The queries to test answer engines with after launch
+are in `AEO-GEO-TEST-QUERIES.md`. Off-site profiles are in
+`docs/external-entity-signals.md`.
 
 ## Content that could be added later
 

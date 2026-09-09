@@ -237,6 +237,14 @@ export const en: Dictionary = {
       restoration: 'Body restoration',
     },
     items: {
+      'arch-crease-before': {
+        title: 'Front wing before the work',
+        note: 'A sharp crease above the wheel arch — the reflection folds back on itself.',
+      },
+      'arch-crease-after': {
+        title: 'The same wing after the repair',
+        note: 'The light runs down the arch in one unbroken line, on the original paint.',
+      },
       'roof-hail-before': {
         title: 'Roof panel before the work',
         note: 'The reflection ripples across the roof — several dents close together.',

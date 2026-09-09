@@ -5,7 +5,7 @@ import { isLocale, locales, type Locale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo/jsonld';
+import { breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/seo/jsonld';
 import { serviceSlugs } from '@/content/services';
 
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -73,6 +73,12 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
 
       <JsonLd
         data={[
+          webPageSchema({
+            locale: typedLocale,
+            path: routePath.faq,
+            name: dict.faq.h1,
+            description: dict.faq.metaDescription,
+          }),
           faqSchema(allQuestions),
           breadcrumbSchema(typedLocale, [
             { name: dict.nav.home, path: routePath.home },

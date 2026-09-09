@@ -134,29 +134,37 @@ export const workCategories: WorkCategory[] = [
 /**
  * Draggable before/after comparisons.
  *
- * Only pairs where both frames come from the same clip AND show the same panel
- * belong here. Adding a pair that fails either test would invent a result the
- * workshop never published. Today exactly one job on the channel clears that
- * bar; add more here as the owner publishes them.
+ * Only pairs where both frames show the same panel from the same camera
+ * position belong here — the slider wipes one over the other, so anything else
+ * reads as two different cars. These frames come from the workshop's own
+ * photographs rather than the video stills, so they carry no clip id and do not
+ * appear in the portfolio grid.
  */
-export interface Comparison {
+export interface ComparisonFrame {
+  /** Key into `dictionary.works.items`, used for the alt text. */
   id: string;
-  before: WorkItem;
-  after: WorkItem;
+  /** File under /public/images/works, without extension. */
+  image: string;
+  width: number;
+  height: number;
 }
 
-const byId = (id: string): WorkItem => {
-  const found = works.find((w) => w.id === id);
-  if (!found) throw new Error(`Unknown work id: ${id}`);
-  return found;
-};
+export interface Comparison {
+  id: string;
+  before: ComparisonFrame;
+  after: ComparisonFrame;
+}
 
 export const comparisons: Comparison[] = [
-  { id: 'roof-hail', before: byId('roof-hail-before'), after: byId('roof-hail-after') },
+  {
+    id: 'arch-crease',
+    before: { id: 'arch-crease-before', image: 'arch-crease-before', ...WORK_IMAGE_SIZE },
+    after: { id: 'arch-crease-after', image: 'arch-crease-after', ...WORK_IMAGE_SIZE },
+  },
 ];
 
 export const heroComparison: Comparison | undefined = comparisons[0];
 
-export function workImagePath(item: WorkItem): string {
+export function workImagePath(item: { image: string }): string {
   return `/images/works/${item.image}.webp`;
 }

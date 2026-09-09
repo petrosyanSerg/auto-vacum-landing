@@ -5,7 +5,7 @@ import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
-import { faqSchema, videoListSchema } from '@/lib/seo/jsonld';
+import { faqSchema, videoListSchema, webPageSchema } from '@/lib/seo/jsonld';
 import { JsonLd } from '@/components/seo/JsonLd';
 
 import { Hero } from '@/components/sections/Hero';
@@ -65,7 +65,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <Location locale={typedLocale} dict={dict} />
       <FinalCta locale={typedLocale} dict={dict} />
 
-      <JsonLd data={[faqSchema(dict.faq.items), videoListSchema(typedLocale)]} />
+      <JsonLd
+        data={[
+          webPageSchema({
+            locale: typedLocale,
+            path: routePath.home,
+            name: `${dict.hero.h1} — ${dict.meta.siteName}`,
+            description: dict.meta.defaultDescription,
+            primaryImage: '/images/works/roof-panel-restored.webp',
+          }),
+          faqSchema(dict.faq.items),
+          videoListSchema(typedLocale),
+        ]}
+      />
     </>
   );
 }
