@@ -22,7 +22,7 @@ export function MobileActionBar({ dict }: { dict: Dictionary }) {
       </a>
 
       <a
-        href={MAPS.googleDirections}
+        href={MAPS.yandexDirections}
         className={styles.action}
         target="_blank"
         rel="noopener noreferrer"

@@ -72,7 +72,7 @@ export function localBusinessSchema(locale: Locale) {
         }
       : {}),
     ...(PRICE_RANGE ? { priceRange: PRICE_RANGE } : {}),
-    hasMap: MAPS.googleDirections,
+    hasMap: MAPS.yandexPlace,
     areaServed: [
       { '@type': 'City', name: ADDRESS.addressLocality[locale] },
       { '@type': 'AdministrativeArea', name: ADDRESS.addressRegion[locale] },

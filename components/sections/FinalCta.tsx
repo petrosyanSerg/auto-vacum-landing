@@ -29,7 +29,7 @@ export function FinalCta({ locale, dict }: { locale: Locale; dict: Dictionary })
         </div>
 
         <div className={styles.secondary}>
-          <ButtonLink href={MAPS.googleDirections} variant="ghost" size="sm" track="directions_click">
+          <ButtonLink href={MAPS.yandexDirections} variant="ghost" size="sm" track="directions_click">
             <PinIcon size={16} />
             {dict.common.directions}
           </ButtonLink>

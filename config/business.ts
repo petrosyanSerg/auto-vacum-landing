@@ -69,10 +69,12 @@ export const MAPS = {
   googleEmbed: `https://www.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&z=16&output=embed`,
   yandexPlace: `https://yandex.com/maps/?text=${encodeURIComponent(MAP_QUERY)}`,
   yandexEmbed: `https://yandex.com/map-widget/v1/?text=${encodeURIComponent(MAP_QUERY)}&z=16`,
+  /** Route to the address; the start point is left empty so Yandex uses the visitor's own. */
+  yandexDirections: `https://yandex.com/maps/?rtext=~${encodeURIComponent(MAP_QUERY)}&rtt=auto`,
 } as const;
 
 /** Which map provider the location section renders. Override with NEXT_PUBLIC_MAP_PROVIDER. */
-export const MAP_PROVIDER = (process.env.NEXT_PUBLIC_MAP_PROVIDER ?? 'google') as 'google' | 'yandex';
+export const MAP_PROVIDER = (process.env.NEXT_PUBLIC_MAP_PROVIDER ?? 'yandex') as 'google' | 'yandex';
 
 /**
  * Public site origin. Drives canonical URLs, hreflang, sitemap and OG URLs.

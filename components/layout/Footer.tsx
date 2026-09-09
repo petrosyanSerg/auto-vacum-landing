@@ -97,7 +97,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 {ADDRESS.addressLocality[locale]}, {ADDRESS.addressRegion[locale]}
               </span>
               <a
-                href={MAPS.googleDirections}
+                href={MAPS.yandexDirections}
                 className={styles.link}
                 target="_blank"
                 rel="noopener noreferrer"

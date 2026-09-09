@@ -67,12 +67,12 @@ export function Location({ locale, dict }: { locale: Locale; dict: Dictionary })
         </address>
 
         <div className={styles.actions}>
-          <ButtonLink href={MAPS.googleDirections} variant="solid" track="directions_click">
+          <ButtonLink href={MAPS.yandexDirections} variant="solid" track="directions_click">
             <PinIcon size={18} />
             {dict.common.directions}
           </ButtonLink>
-          <ButtonLink href={MAPS.yandexPlace} variant="outline" track="map_click">
-            {dict.location.provider.yandex}
+          <ButtonLink href={MAPS.googleDirections} variant="outline" track="map_click">
+            {dict.location.provider.google}
           </ButtonLink>
         </div>
       </div>

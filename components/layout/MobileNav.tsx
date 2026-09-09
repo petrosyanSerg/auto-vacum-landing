@@ -145,7 +145,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
             <div className={styles.contactRow}>
               <CallButton label={dict.common.callWithNumber} ariaLabel={dict.common.callAria} block />
               <ButtonLink
-                href={MAPS.googleDirections}
+                href={MAPS.yandexDirections}
                 variant="outline"
                 track="directions_click"
                 block

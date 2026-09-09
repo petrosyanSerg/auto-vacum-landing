@@ -35,7 +35,7 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
           <div className={styles.actions}>
             <CallButton label={dict.hero.primaryCta} ariaLabel={dict.common.callAria} size="lg" />
-            <ButtonLink href={MAPS.googleDirections} variant="outline" size="lg" track="directions_click">
+            <ButtonLink href={MAPS.yandexDirections} variant="outline" size="lg" track="directions_click">
               <PinIcon size={18} />
               {dict.hero.secondaryCta}
             </ButtonLink>
@@ -87,7 +87,7 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             <span className={styles.railLabel}>{dict.common.address}</span>
             <a
               className={styles.railValue}
-              href={MAPS.googleDirections}
+              href={MAPS.yandexDirections}
               target="_blank"
               rel="noopener noreferrer"
               data-track="map_click"

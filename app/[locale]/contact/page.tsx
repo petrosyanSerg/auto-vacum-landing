@@ -93,7 +93,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           </div>
 
           <div className={styles.links}>
-            <ButtonLink href={MAPS.googleDirections} variant="outline" track="directions_click">
+            <ButtonLink href={MAPS.yandexDirections} variant="outline" track="directions_click">
               <PinIcon size={17} />
               {dict.common.directions}
             </ButtonLink>
