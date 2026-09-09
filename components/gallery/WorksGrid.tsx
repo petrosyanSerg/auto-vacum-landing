@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 
 import { workCategories, workImagePath, type WorkItem } from '@/content/works';
 import { videoWatchUrl } from '@/content/videos';
-import type { Dictionary } from '@/lib/i18n/dictionaries';
+import type { WorksGridCopy } from './WorksGrid.copy';
 import type { WorkCategory } from '@/content/translations/types';
 import { track } from '@/lib/analytics/events';
 import { PlayIcon } from '@/components/ui/Icons';
@@ -21,12 +21,12 @@ import styles from './WorksGrid.module.scss';
  */
 export function WorksGrid({
   items,
-  dict,
+  copy,
   filterable = false,
   showSourceNote = true,
 }: {
   items: WorkItem[];
-  dict: Dictionary;
+  copy: WorksGridCopy;
   filterable?: boolean;
   showSourceNote?: boolean;
 }) {
@@ -53,7 +53,7 @@ export function WorksGrid({
       {filterable ? (
         <div className={styles.filters}>
           <span className={styles.filterLabel} id="works-filter-label">
-            {dict.common.filterLabel}
+            {copy.filterLabel}
           </span>
           <button
             type="button"
@@ -61,7 +61,7 @@ export function WorksGrid({
             aria-pressed={active === 'all'}
             onClick={() => setActive('all')}
           >
-            {dict.common.all}
+            {copy.all}
           </button>
           {available.map((category) => (
             <button
@@ -74,18 +74,18 @@ export function WorksGrid({
                 track('work_filter', { category });
               }}
             >
-              {dict.works.categories[category]}
+              {copy.categories[category]}
             </button>
           ))}
         </div>
       ) : null}
 
       {visible.length === 0 ? (
-        <p className={styles.empty}>{dict.works.empty}</p>
+        <p className={styles.empty}>{copy.empty}</p>
       ) : (
         <ul className={styles.grid} aria-labelledby={filterable ? 'works-filter-label' : undefined}>
           {visible.map((item, index) => {
-            const copy = dict.works.items[item.id];
+            const caption = copy.items[item.id];
             return (
               <li
                 key={item.id}
@@ -102,7 +102,7 @@ export function WorksGrid({
                 >
                   <Image
                     src={workImagePath(item)}
-                    alt={copy?.title ?? ''}
+                    alt={caption?.title ?? ''}
                     width={item.width}
                     height={item.height}
                     sizes={
@@ -115,15 +115,15 @@ export function WorksGrid({
                   <span className={styles.scrim} />
 
                   <span className={`${styles.state} ${stateClass[item.state]}`}>
-                    {dict.common.damageState[item.state]}
+                    {copy.damageState[item.state]}
                   </span>
 
                   <span className={styles.caption}>
-                    <span className={styles.tileTitle}>{copy?.title}</span>
-                    <span className={styles.tileNote}>{copy?.note}</span>
+                    <span className={styles.tileTitle}>{caption?.title}</span>
+                    <span className={styles.tileNote}>{caption?.note}</span>
                     <span className={styles.watch}>
                       <PlayIcon size={13} />
-                      {dict.common.watchOnYoutube}
+                      {copy.watchOnYoutube}
                     </span>
                   </span>
                 </a>
@@ -133,7 +133,7 @@ export function WorksGrid({
         </ul>
       )}
 
-      {showSourceNote ? <p className={styles.source}>{dict.common.sourceNote}</p> : null}
+      {showSourceNote ? <p className={styles.source}>{copy.sourceNote}</p> : null}
     </div>
   );
 }

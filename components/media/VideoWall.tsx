@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 import { videoEmbedUrl, videoPoster, videos, VIDEO_POSTER_SIZE } from '@/content/videos';
-import type { Dictionary } from '@/lib/i18n/dictionaries';
+import type { VideoWallCopy } from './VideoWall.copy';
 import { track } from '@/lib/analytics/events';
 import { PlayIcon } from '@/components/ui/Icons';
 import styles from './VideoWall.module.scss';
@@ -14,14 +14,13 @@ import styles from './VideoWall.module.scss';
  * third-party JavaScript. A YouTube player is only inserted into the cell the
  * visitor actually presses, and only through the no-cookie host.
  */
-export function VideoWall({ dict }: { dict: Dictionary }) {
+export function VideoWall({ copy }: { copy: VideoWallCopy }) {
   const [playing, setPlaying] = useState<string | null>(null);
 
   return (
     <ul className={styles.grid}>
       {videos.map((video, index) => {
-        const copy = dict.works.items[video.captionKey];
-        const title = copy?.title ?? dict.proof.videoTitle;
+        const title = copy.titles[video.id] ?? copy.fallbackTitle;
         const isPlaying = playing === video.id;
 
         return (
@@ -48,7 +47,7 @@ export function VideoWall({ dict }: { dict: Dictionary }) {
                   setPlaying(video.id);
                   track('video_play', { video: video.id });
                 }}
-                aria-label={`${dict.common.playVideo}: ${title}`}
+                aria-label={`${copy.playVideo}: ${title}`}
               >
                 <Image
                   src={videoPoster(video.id)}

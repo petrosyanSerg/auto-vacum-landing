@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { localePath, type Locale } from '@/lib/i18n/config';
 import { primaryNav } from '@/lib/i18n/routes';
-import type { Dictionary } from '@/lib/i18n/dictionaries';
+import type { MobileNavCopy } from './MobileNav.copy';
 import { ADDRESS, MAPS, PHONE_DISPLAY, SOCIAL } from '@/config/business';
 import { ButtonLink } from '@/components/ui/Button';
 import { CallButton } from '@/components/ui/CallButton';
@@ -21,7 +21,7 @@ import styles from './MobileNav.module.scss';
  * Escape or on navigation, and returns focus to the button that opened it.
  * Body scrolling is locked so the page behind cannot drift under a thumb.
  */
-export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+export function MobileNav({ locale, copy }: { locale: Locale; copy: MobileNavCopy }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname() ?? '/';
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -93,7 +93,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
         type="button"
         className={`${headerStyles.menuButton} ${headerStyles.mobileOnly}`}
         aria-expanded={open}
-        aria-label={open ? dict.nav.closeMenu : dict.nav.openMenu}
+        aria-label={open ? copy.nav.closeMenu : copy.nav.openMenu}
         onClick={() => setOpen(true)}
       >
         <MenuIcon size={20} />
@@ -104,26 +104,26 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
           className={styles.overlay}
           role="dialog"
           aria-modal="true"
-          aria-label={dict.nav.menuLabel}
+          aria-label={copy.nav.menuLabel}
           ref={panelRef}
           onClick={(event) => {
             if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
           }}
         >
           <div className={styles.bar}>
-            <p className={styles.title}>{dict.nav.menuLabel}</p>
+            <p className={styles.title}>{copy.nav.menuLabel}</p>
             <button
               type="button"
               className={styles.close}
               onClick={close}
-              aria-label={dict.nav.closeMenu}
+              aria-label={copy.nav.closeMenu}
             >
               <CloseIcon size={20} />
             </button>
           </div>
 
           <div className={styles.body}>
-            <nav aria-label={dict.nav.menuLabel}>
+            <nav aria-label={copy.nav.menuLabel}>
               <ul className={styles.links}>
                 {primaryNav.map((item, index) => (
                   <li key={item.key}>
@@ -135,7 +135,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
                       <span className={styles.linkIndex}>
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      {dict.nav[item.key]}
+                      {copy.nav[item.key]}
                     </Link>
                   </li>
                 ))}
@@ -143,7 +143,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
             </nav>
 
             <div className={styles.contactRow}>
-              <CallButton label={dict.common.callWithNumber} ariaLabel={dict.common.callAria} block />
+              <CallButton label={copy.callWithNumber} ariaLabel={copy.callAria} block />
               <ButtonLink
                 href={MAPS.yandexDirections}
                 variant="outline"
@@ -151,7 +151,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
                 block
               >
                 <PinIcon size={17} />
-                {dict.common.directions}
+                {copy.directions}
               </ButtonLink>
               <address className={styles.address}>
                 {ADDRESS.streetAddress[locale]}
@@ -163,7 +163,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
             </div>
 
             <div className={styles.section}>
-              <p className={styles.sectionLabel}>{dict.footer.contactTitle}</p>
+              <p className={styles.sectionLabel}>{copy.contactTitle}</p>
               <div className={styles.contactRow}>
                 <ButtonLink
                   href={SOCIAL.instagram}
@@ -173,7 +173,7 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
                   block
                 >
                   <InstagramIcon size={16} />
-                  {dict.common.instagram}
+                  {copy.instagram}
                 </ButtonLink>
                 <ButtonLink
                   href={SOCIAL.youtube}
@@ -183,13 +183,13 @@ export function MobileNav({ locale, dict }: { locale: Locale; dict: Dictionary }
                   block
                 >
                   <YoutubeIcon size={16} />
-                  {dict.common.youtube}
+                  {copy.youtube}
                 </ButtonLink>
               </div>
             </div>
 
             <div className={styles.section}>
-              <p className={styles.sectionLabel}>{dict.nav.languageLabel}</p>
+              <p className={styles.sectionLabel}>{copy.nav.languageLabel}</p>
               <LanguageList locale={locale} />
             </div>
           </div>

@@ -5,6 +5,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ButtonLink } from '@/components/ui/Button';
 import { InstagramIcon, YoutubeIcon } from '@/components/ui/Icons';
 import { VideoWall } from '@/components/media/VideoWall';
+import { videoWallCopy } from '@/components/media/VideoWall.copy';
 
 export function Videos({ dict }: { dict: Dictionary }) {
   return (
@@ -17,7 +18,7 @@ export function Videos({ dict }: { dict: Dictionary }) {
         wide
       />
 
-      <VideoWall dict={dict} />
+      <VideoWall copy={videoWallCopy(dict)} />
 
       <div className={sectionStyles.foot}>
         <ButtonLink href={SOCIAL.youtube} variant="outline" track="youtube_click">

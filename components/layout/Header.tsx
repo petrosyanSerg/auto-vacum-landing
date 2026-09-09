@@ -8,6 +8,7 @@ import { CallButton } from '@/components/ui/CallButton';
 import { BeamMark, PhoneIcon } from '@/components/ui/Icons';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileNav } from './MobileNav';
+import { mobileNavCopy } from './MobileNav.copy';
 import styles from './Header.module.scss';
 
 /**
@@ -61,7 +62,7 @@ export function Header({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             <PhoneIcon size={19} />
           </a>
 
-          <MobileNav locale={locale} dict={dict} />
+          <MobileNav locale={locale} copy={mobileNavCopy(dict)} />
         </div>
       </div>
     </header>

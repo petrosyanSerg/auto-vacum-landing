@@ -7,6 +7,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ButtonLink } from '@/components/ui/Button';
 import { ArrowIcon } from '@/components/ui/Icons';
 import { WorksGrid } from '@/components/gallery/WorksGrid';
+import { worksGridCopy } from '@/components/gallery/WorksGrid.copy';
 import styles from './Proof.module.scss';
 
 /**
@@ -49,6 +50,8 @@ export function Proof({
   dict: Dictionary;
   limit?: number;
 }) {
+  const shown = works.slice(0, limit);
+
   return (
     <Section id="proof" labelledBy="proof-title">
       <div className={styles.head}>
@@ -62,7 +65,7 @@ export function Proof({
         <ReflectionRule note={dict.proof.lineNote} />
       </div>
 
-      <WorksGrid items={works.slice(0, limit)} dict={dict} showSourceNote={false} />
+      <WorksGrid items={shown} copy={worksGridCopy(dict, shown)} showSourceNote={false} />
 
       <div className={sectionStyles.foot}>
         <ButtonLink href={localePath(locale, routePath.works)} variant="outline">

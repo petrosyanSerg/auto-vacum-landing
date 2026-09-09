@@ -2,7 +2,7 @@
 
 import { useId, useRef, useState } from 'react';
 
-import type { Dictionary } from '@/lib/i18n/dictionaries';
+import type { PhotoAssessmentCopy } from './PhotoAssessment.copy';
 import { track } from '@/lib/analytics/events';
 import {
   ACCEPT_ATTRIBUTE,
@@ -24,8 +24,7 @@ type Status = 'idle' | 'sending' | 'sent' | 'failed';
  * statement that it is switched off, and points at Instagram and the phone
  * instead. It never accepts a submission it cannot deliver.
  */
-export function PhotoAssessment({ dict, enabled }: { dict: Dictionary; enabled: boolean }) {
-  const copy = dict.contact;
+export function PhotoAssessment({ copy, enabled }: { copy: PhotoAssessmentCopy; enabled: boolean }) {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [error, setError] = useState<UploadRejection | 'noFile' | 'send' | null>(null);
