@@ -1,0 +1,66 @@
+.label {
+  @include label;
+
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--steel-500);
+  margin-bottom: var(--s-6);
+
+  &::before {
+    content: '';
+    width: 26px;
+    height: 1px;
+    background: var(--hair-strong);
+    flex: none;
+  }
+}
+
+/* An inspection sheet: four findings, divided by hairlines rather than boxed
+   into cards. Nothing here is a claim the workshop cannot back up. */
+.grid {
+  display: grid;
+  gap: var(--s-6);
+  grid-template-columns: 1fr;
+
+  @include from(md) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+  }
+
+  @include from(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.item {
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+
+  @include from(md) {
+    padding: var(--s-5) var(--s-5) var(--s-5) 0;
+    border-top: 1px solid var(--hair);
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--hair);
+    }
+
+    &:not(:first-child) {
+      padding-left: var(--s-5);
+    }
+  }
+}
+
+.itemTitle {
+  font-size: var(--fs-h4);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.itemBody {
+  color: var(--steel-300);
+  font-size: var(--fs-small);
+  line-height: 1.65;
+}

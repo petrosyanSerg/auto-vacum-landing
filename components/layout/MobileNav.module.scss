@@ -1,0 +1,106 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--ink-950);
+  overscroll-behavior: contain;
+
+  @include from(lg) {
+    display: none;
+  }
+}
+
+.bar {
+  @include container;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-h);
+  border-bottom: 1px solid var(--hair);
+}
+
+.title {
+  @include label;
+
+  color: var(--steel-400);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  color: var(--panel);
+  cursor: pointer;
+}
+
+.body {
+  @include container;
+
+  overflow-y: auto;
+  padding-block: var(--s-6) var(--s-8);
+  display: grid;
+  align-content: start;
+  gap: var(--s-6);
+}
+
+.links {
+  display: grid;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--hair);
+  color: var(--panel);
+  text-decoration: none;
+  font-size: 1.375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+
+  &[aria-current='page'] {
+    color: var(--steel-300);
+  }
+}
+
+.linkIndex {
+  @include label;
+
+  color: var(--steel-500);
+  font-size: 0.625rem;
+}
+
+.section {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.sectionLabel {
+  @include label;
+
+  color: var(--steel-500);
+}
+
+.contactRow {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.address {
+  color: var(--steel-300);
+  font-style: normal;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}

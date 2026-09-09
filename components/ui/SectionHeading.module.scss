@@ -1,0 +1,56 @@
+.heading {
+  display: grid;
+  gap: var(--s-4);
+  margin-bottom: var(--s-7);
+}
+
+.label {
+  @include label;
+
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--steel-400);
+
+  // A short segment of the light line, cut in before the label.
+  &::before {
+    content: '';
+    width: 26px;
+    height: 1px;
+    background: var(--hair-strong);
+    flex: none;
+  }
+}
+
+.title {
+  font-size: var(--fs-display-2);
+  max-width: 20ch;
+}
+
+.wide .title {
+  max-width: 28ch;
+}
+
+.lead {
+  color: var(--steel-300);
+  font-size: var(--fs-lead);
+  max-width: 56ch;
+}
+
+.centred {
+  justify-items: center;
+  text-align: center;
+
+  .label::before {
+    display: none;
+  }
+
+  .title,
+  .lead {
+    max-width: 34ch;
+  }
+
+  .lead {
+    max-width: 52ch;
+  }
+}

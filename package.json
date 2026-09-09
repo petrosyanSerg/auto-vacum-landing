@@ -1,0 +1,30 @@
+{
+  "name": "auto-vacuum-pdr",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run build",
+    "assets:images": "node scripts/prepare-images.mjs",
+    "assets:brand": "node scripts/generate-brand-assets.mjs"
+  },
+  "dependencies": {
+    "next": "^16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.4",
+    "sass": "1.83.0",
+    "sharp": "0.33.5",
+    "typescript": "5.7.2"
+  }
+}

@@ -1,0 +1,60 @@
+.field {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: #333d48;
+  pointer-events: none;
+
+  // Fades away toward the bottom and the right so it never competes with the
+  // headline or the photograph.
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 94%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 58%, transparent 94%);
+
+  @include from(lg) {
+    display: block;
+  }
+}
+
+.bent,
+.straight {
+  opacity: 1;
+}
+
+.straight {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bent {
+    animation: beam-hand-off 900ms var(--e-inout) 700ms forwards;
+  }
+
+  .straight {
+    animation: beam-arrive 900ms var(--e-inout) 700ms forwards;
+  }
+}
+
+// Without motion the panel is simply shown finished.
+@media (prefers-reduced-motion: reduce) {
+  .bent {
+    opacity: 0;
+  }
+
+  .straight {
+    opacity: 1;
+  }
+}
+
+@keyframes beam-hand-off {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes beam-arrive {
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,112 @@
+.wrap {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.7rem;
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  color: var(--steel-300);
+  cursor: pointer;
+  transition:
+    color var(--t-1) var(--e-out),
+    border-color var(--t-1) var(--e-out);
+
+  &:hover {
+    color: var(--panel);
+    border-color: var(--hair-strong);
+  }
+
+  &[aria-expanded='true'] {
+    color: var(--panel);
+    border-color: var(--hair-strong);
+  }
+}
+
+.code {
+  @include label;
+
+  letter-spacing: 0.14em;
+}
+
+.chevron {
+  transition: transform var(--t-1) var(--e-out);
+
+  .trigger[aria-expanded='true'] & {
+    transform: rotate(180deg);
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 190px;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--ink-850);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-2);
+  box-shadow: var(--shadow-lift);
+}
+
+.option {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border-radius: var(--r-1);
+  color: var(--steel-300);
+  text-decoration: none;
+  transition: background-color var(--t-1) var(--e-out), color var(--t-1) var(--e-out);
+
+  &:hover {
+    background: var(--ink-800);
+    color: var(--panel);
+  }
+
+  &[aria-current='true'] {
+    color: var(--panel);
+    background: var(--ink-800);
+  }
+}
+
+.optionCode {
+  @include label;
+
+  color: var(--steel-500);
+}
+
+/* Inside the mobile menu the switcher is a plain row of links — no popover
+   inside a popover. */
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.inlineOption {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  color: var(--steel-300);
+  text-decoration: none;
+  font-size: var(--fs-small);
+
+  &[aria-current='true'] {
+    color: var(--ink-950);
+    background: var(--panel);
+    border-color: var(--panel);
+  }
+}

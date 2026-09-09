@@ -1,0 +1,37 @@
+.head {
+  display: grid;
+  gap: var(--s-6);
+  margin-bottom: var(--s-7);
+
+  @include from(lg) {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+}
+
+/* The rule that explains the whole trade, set as a specimen rather than a
+   sentence: a straight line, a bent line, and what each one means. */
+.rule {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-2);
+  background: var(--ink-900);
+  min-width: min(100%, 20rem);
+}
+
+.ruleDiagram {
+  width: 100%;
+  height: auto;
+  color: var(--beam);
+}
+
+.ruleNote {
+  @include label;
+
+  color: var(--steel-400);
+  font-size: 0.625rem;
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+}

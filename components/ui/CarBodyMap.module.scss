@@ -1,0 +1,92 @@
+.host {
+  position: relative;
+  width: 100%;
+}
+
+.car {
+  width: 100%;
+  height: auto;
+}
+
+/* --- Panels ---------------------------------------------------------------
+   Transparent until something points at them. A panel affected by the selected
+   damage type carries a wash of light; the panel under the pointer carries an
+   outline as well, so "this is where it happens" and "this is what you are
+   about to pick" never look like the same state. ---------------------------- */
+
+.zone {
+  fill: rgb(255 246 226 / 0);
+  stroke: rgb(255 246 226 / 0);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition:
+    fill var(--motion-normal) var(--ease-standard),
+    stroke var(--motion-normal) var(--ease-standard);
+
+  &[data-affected] {
+    fill: rgb(255 246 226 / 0.1);
+    stroke: rgb(255 246 226 / 0.35);
+  }
+
+  &:hover {
+    fill: rgb(255 246 226 / 0.16);
+    stroke: rgb(255 246 226 / 0.7);
+  }
+}
+
+/* --- Damage marks ---------------------------------------------------------
+   Marker red, and only ever where the selected type would actually leave a
+   mark: many small dents for hail, one point for an impact. ----------------- */
+
+.hail,
+.impact {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.host[data-category='hail'] .hail,
+.host[data-category='impact'] .impact {
+  opacity: 1;
+}
+
+.wheels {
+  pointer-events: none;
+}
+
+/* The flank line brightens on the one type that is about the whole body. */
+.flank {
+  pointer-events: none;
+  transition: opacity var(--motion-slow) var(--ease-smooth);
+
+  .host[data-category='restoration'] & {
+    opacity: 0.6;
+  }
+}
+
+/* --- Panel labels --------------------------------------------------------- */
+
+.tip {
+  @include label;
+
+  position: absolute;
+  z-index: 2;
+  translate: -50% -50%;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--hair-strong);
+  border-radius: var(--r-1);
+  background: rgb(7 9 11 / 0.86);
+  color: var(--panel);
+  font-size: 0.5625rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--motion-fast) var(--ease-standard),
+    translate var(--motion-normal) var(--ease-smooth);
+
+  &[data-show] {
+    opacity: 1;
+    translate: -50% -60%;
+  }
+}

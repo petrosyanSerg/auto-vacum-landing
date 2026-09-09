@@ -1,0 +1,145 @@
+.footer {
+  border-top: 1px solid var(--hair);
+  background: var(--ink-900);
+  padding-block: var(--s-8) var(--s-6);
+}
+
+.inner {
+  @include container;
+}
+
+.grid {
+  display: grid;
+  gap: var(--s-7);
+  grid-template-columns: 1fr;
+
+  @include from(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include from(lg) {
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: var(--s-6);
+  }
+}
+
+.brandCell {
+  display: grid;
+  gap: var(--s-4);
+  align-content: start;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--panel);
+  text-decoration: none;
+}
+
+.brandName {
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tagline {
+  color: var(--steel-300);
+  font-size: var(--fs-small);
+  max-width: 34ch;
+}
+
+.socials {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  color: var(--steel-300);
+  transition: color var(--t-1) var(--e-out), border-color var(--t-1) var(--e-out);
+
+  &:hover {
+    color: var(--panel);
+    border-color: var(--hair-strong);
+  }
+}
+
+.colTitle {
+  @include label;
+
+  color: var(--steel-500);
+  margin-bottom: var(--s-4);
+}
+
+.list {
+  display: grid;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  color: var(--steel-300);
+  text-decoration: none;
+  font-size: var(--fs-small);
+  transition: color var(--t-1) var(--e-out);
+
+  &:hover {
+    color: var(--panel);
+    text-decoration: underline;
+  }
+}
+
+.address {
+  font-style: normal;
+  color: var(--steel-300);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.phone {
+  color: var(--panel);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.hours {
+  color: var(--steel-400);
+}
+
+.bottom {
+  margin-top: var(--s-8);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--hair);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4) var(--s-6);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fineprint {
+  color: var(--steel-500);
+  font-size: 0.8125rem;
+  max-width: 62ch;
+  display: grid;
+  gap: 0.3rem;
+}

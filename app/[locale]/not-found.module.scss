@@ -1,0 +1,47 @@
+.wrap {
+  @include container;
+  @include section;
+
+  display: grid;
+  gap: var(--s-5);
+  justify-items: start;
+  align-content: center;
+  min-height: 56svh;
+}
+
+.code {
+  @include label;
+
+  color: var(--steel-500);
+  font-size: 0.75rem;
+}
+
+.title {
+  font-size: var(--fs-display-2);
+  max-width: 20ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+.link {
+  color: var(--panel);
+  text-decoration: underline;
+}
+
+.phone {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--panel);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

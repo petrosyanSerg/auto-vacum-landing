@@ -1,0 +1,217 @@
+/* ---------------------------------------------------------------------------
+   The process diagram.
+
+   Everything that moves here is either opacity or a transform, and every stage
+   is selected by a data attribute on the host rather than by a class per
+   element, so the whole diagram is one state machine written in CSS.
+   --------------------------------------------------------------------------- */
+
+.host {
+  display: grid;
+  gap: var(--s-4);
+  margin-bottom: var(--s-6);
+}
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-2);
+  background: var(--ink-900);
+  aspect-ratio: 16 / 11;
+
+  @include from(md) {
+    aspect-ratio: 21 / 8;
+  }
+}
+
+.panel {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- The three surfaces, the marker and the rod ---------------------------
+   Which one of each is showing is decided in the component and written as an
+   inline opacity; all this does is say how long the change takes. Opacity and
+   translate only, so every one of these runs on the compositor. ------------- */
+
+.surface,
+.marker {
+  transition: opacity var(--motion-settle) var(--ease-emphasized);
+}
+
+.tool {
+  transition:
+    opacity var(--motion-normal) var(--ease-smooth),
+    translate var(--motion-settle) var(--ease-emphasized);
+}
+
+/* --- The inspection light -------------------------------------------------
+   One pass on the first stage to read the panel, one pass on the last over the
+   finished surface. It is a plain horizontal translate of a gradient, which is
+   the cheapest continuous motion the browser can be asked for. --------------- */
+
+.scan {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .host[data-stage='0'] .scan,
+  .host[data-stage='4'] .scan {
+    opacity: 1;
+    animation: rp-scan var(--motion-scan) var(--ease-standard) 1 both;
+  }
+}
+
+@keyframes rp-scan {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(720px);
+  }
+}
+
+/* --- The instrument reading ----------------------------------------------- */
+
+.hud {
+  position: absolute;
+  left: var(--s-4);
+  bottom: var(--s-4);
+  right: var(--s-4);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  background: rgb(7 9 11 / 0.74);
+  backdrop-filter: blur(6px);
+
+  @include from(md) {
+    right: auto;
+    min-width: 22rem;
+  }
+}
+
+.hudStage {
+  @include label;
+
+  color: var(--beam);
+  font-size: 0.625rem;
+  flex: none;
+}
+
+.hudName {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Marker red while there is still a dent; panel white once there is not. */
+.hudDepth {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  flex: none;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--marker-lift);
+  transition: color var(--motion-normal) var(--ease-standard);
+
+  &[data-flat] {
+    color: var(--panel);
+  }
+}
+
+.hudUnit {
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  color: var(--steel-500);
+}
+
+/* --- The stage rail -------------------------------------------------------
+   Five numbers under the panel. On a phone this is the whole interaction: the
+   diagram plays itself, and tapping a number jumps to that stage. ------------ */
+
+.rail {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--hair);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  overflow: hidden;
+}
+
+.railStep {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.55rem 0.5rem 0.5rem;
+  min-height: 44px;
+  border: 0;
+  background: var(--ink-900);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+
+  &:hover {
+    background: var(--ink-850);
+  }
+}
+
+.railNum {
+  @include label;
+
+  font-size: 0.625rem;
+  // Stages already passed stay legible; upcoming ones dim, below.
+  color: var(--steel-300);
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+
+/* The tick fills from the left as the job runs through it: every stage up to
+   and including the current one is lit, the rest are not. One line of light,
+   cut into five segments. */
+.railTick {
+  position: relative;
+  height: 2px;
+  background: var(--hair-strong);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--beam);
+    transform-origin: left;
+    transform: scaleX(1);
+    transition: transform var(--motion-slow) var(--ease-smooth);
+  }
+}
+
+.railStep[aria-pressed='true'] {
+  background: var(--ink-850);
+
+  .railNum {
+    color: var(--panel);
+  }
+}
+
+/* Everything after the current stage has not happened yet. */
+.railStep[aria-pressed='true'] ~ .railStep {
+  .railTick::after {
+    transform: scaleX(0);
+  }
+
+  .railNum {
+    color: var(--steel-500);
+  }
+}

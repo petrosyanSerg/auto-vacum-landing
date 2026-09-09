@@ -1,0 +1,164 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--t-2) var(--e-out),
+    border-color var(--t-2) var(--e-out),
+    backdrop-filter var(--t-2) var(--e-out);
+
+  // Past the first scroll the bar earns a surface and the light line beneath it.
+  :global(html[data-scrolled]) & {
+    background: rgb(7 9 11 / 0.82);
+    backdrop-filter: blur(14px) saturate(140%);
+    border-bottom-color: var(--hair);
+  }
+}
+
+.inner {
+  @include container;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  min-height: var(--header-h);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: var(--panel);
+  flex: none;
+}
+
+.mark {
+  color: var(--panel);
+  flex: none;
+}
+
+.brandText {
+  display: grid;
+  gap: 1px;
+  line-height: 1.1;
+}
+
+.brandName {
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.brandMeta {
+  @include label;
+
+  color: var(--steel-500);
+  font-size: 0.5625rem;
+  letter-spacing: 0.2em;
+
+  @include upto(sm) {
+    display: none;
+  }
+}
+
+.nav {
+  display: none;
+
+  @include from(lg) {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+  }
+}
+
+.navLink {
+  position: relative;
+  padding-block: 0.35rem;
+  color: var(--steel-300);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  transition: color var(--t-1) var(--e-out);
+
+  // A hairline that grows from the left, like a light line being drawn on.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--panel);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--t-2) var(--e-out);
+  }
+
+  &:hover,
+  &[aria-current='page'] {
+    color: var(--panel);
+  }
+
+  &:hover::after,
+  &[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex: none;
+}
+
+/* Icon-only call control for the narrow header. The number itself lives in the
+   hero and in the bottom action bar, so the bar stays uncrowded. */
+.callIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: var(--panel);
+  color: var(--ink-950);
+  border-radius: var(--r-1);
+  text-decoration: none;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-1);
+  color: var(--panel);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--hair-strong);
+  }
+}
+
+/* Responsive visibility. Doubled selectors so these always beat the display
+   value set by the component classes above, whatever the source order. */
+.desktopOnly.desktopOnly {
+  display: none;
+
+  @include from(lg) {
+    display: inline-flex;
+  }
+}
+
+.mobileOnly.mobileOnly {
+  @include from(lg) {
+    display: none;
+  }
+}

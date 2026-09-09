@@ -1,0 +1,81 @@
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-2);
+  overflow: hidden;
+  background: var(--ink-850);
+
+  @include from(lg) {
+    aspect-ratio: 16 / 11;
+    height: 100%;
+    min-height: 320px;
+  }
+}
+
+/* Before the visitor asks for it, the map is a drawing: the light-line grid
+   with a marker where the workshop is. No third-party request has been made. */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  width: 100%;
+  border: 0;
+  background: var(--ink-850);
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg, var(--hair) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, var(--hair) 0 1px, transparent 1px 64px);
+  opacity: 0.75;
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 20%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 45%, #000 20%, transparent 78%);
+}
+
+.content {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+}
+
+.pin {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--hair-strong);
+  background: var(--ink-900);
+  color: var(--panel);
+}
+
+.cta {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.note {
+  color: var(--steel-500);
+  font-size: 0.8125rem;
+  max-width: 34ch;
+}
+
+.embed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: grayscale(0.35) contrast(1.05);
+}

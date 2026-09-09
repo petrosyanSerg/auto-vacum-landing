@@ -1,0 +1,28 @@
+.section {
+  @include section;
+
+  border-bottom: 1px solid var(--hair);
+}
+
+/* A slightly lifted surface, used to separate two adjacent full-width blocks
+   without adding another rule. */
+.raised {
+  background: var(--ink-900);
+}
+
+.flush {
+  border-bottom: 0;
+}
+
+.inner {
+  @include container;
+}
+
+/* Trailing action row: the "see all" / "watch the rest" link under a block. */
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  align-items: center;
+  margin-top: var(--s-7);
+}

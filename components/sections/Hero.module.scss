@@ -1,0 +1,221 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--hair);
+  background: var(--ink-950);
+}
+
+.field {
+  z-index: 0;
+}
+
+.inner {
+  @include container;
+
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(2.5rem, 5vw, 4rem);
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+
+  @include from(lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    padding-block: clamp(2.5rem, 4vw, 4rem);
+  }
+}
+
+.copy {
+  display: grid;
+  gap: var(--s-5);
+  align-content: start;
+  max-width: 34rem;
+}
+
+.eyebrow {
+  @include label;
+
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--steel-300);
+
+  &::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--beam);
+    opacity: 0.7;
+    flex: none;
+  }
+}
+
+.title {
+  font-size: var(--fs-display-1);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.lead {
+  color: var(--steel-300);
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  max-width: 44ch;
+}
+
+.actions {
+  display: grid;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+
+  @include from(sm) {
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: center;
+  }
+}
+
+.where {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--steel-400);
+  font-size: var(--fs-small);
+}
+
+/* The one link out of the hero. It points at the evidence, and its rule grows
+   toward the arrow on hover — the light line again, used as a direction. */
+.cue {
+  @include label;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  align-self: start;
+  color: var(--steel-300);
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-standard);
+
+  &:hover {
+    color: var(--panel);
+  }
+
+  svg {
+    transition: translate var(--motion-normal) var(--ease-smooth);
+  }
+
+  &:hover svg {
+    translate: 4px 0;
+  }
+}
+
+.cueLine {
+  width: 28px;
+  height: 1px;
+  background: var(--beam);
+  opacity: 0.7;
+  transition: width var(--motion-normal) var(--ease-smooth);
+
+  .cue:hover & {
+    width: 44px;
+  }
+}
+
+.visual {
+  position: relative;
+
+  // Portrait on phones, square on desktop so the whole hero — including the
+  // fact rail — still lands inside a laptop viewport.
+  --ba-aspect: 4 / 5;
+  --ba-focus: 42%;
+
+  @include from(lg) {
+    --ba-aspect: 1 / 1;
+  }
+
+  // On wide screens the comparison runs off the right edge of the page, so the
+  // photograph reads as a window rather than a card.
+  @include from(xl) {
+    margin-right: calc(var(--gutter) * -1);
+  }
+}
+
+/* --- The fact rail --------------------------------------------------------
+   Three answers a visitor needs in the first five seconds: what, where, and
+   the number to call. Set in the technical face, divided by hairlines. ------ */
+
+.rail {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--hair);
+}
+
+.railInner {
+  @include container;
+
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @include from(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.railCell {
+  display: grid;
+  gap: 0.35rem;
+  padding: var(--s-5) 0;
+  border-bottom: 1px solid var(--hair);
+
+  @include from(md) {
+    padding: var(--s-5) var(--s-5) var(--s-5) 0;
+    border-bottom: 0;
+    border-right: 1px solid var(--hair);
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:not(:first-child) {
+      padding-left: var(--s-5);
+    }
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.railLabel {
+  @include label;
+
+  color: var(--steel-500);
+}
+
+.railValue {
+  color: var(--panel);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.railPhone {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+  color: var(--panel);
+  text-decoration: none;
+  justify-self: start;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

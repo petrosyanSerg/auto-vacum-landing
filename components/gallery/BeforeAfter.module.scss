@@ -1,0 +1,247 @@
+.figure {
+  margin: 0;
+  display: grid;
+  gap: var(--s-4);
+}
+
+.frame {
+  --pos: 50%;
+
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-2);
+  background: var(--ink-850);
+  aspect-ratio: var(--ba-aspect, 4 / 5);
+  touch-action: pan-y; /* vertical scrolling still works over the control */
+  user-select: none;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center var(--ba-focus, 50%);
+  }
+}
+
+/* "Before" sits on top, clipped back to the divider. Revealing the finished
+   panel by wiping the damage away is the right direction for this story. */
+.before {
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+
+.tag {
+  @include label;
+
+  position: absolute;
+  top: var(--s-4);
+  z-index: 3;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--r-1);
+  background: rgb(7 9 11 / 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--panel);
+  pointer-events: none;
+  font-size: 0.625rem;
+}
+
+.tagBefore {
+  left: var(--s-4);
+  color: var(--marker-lift);
+}
+
+.tagAfter {
+  right: var(--s-4);
+}
+
+/* --- The instrument -------------------------------------------------------
+   Not a generic slider grip. A PDR technician reads a panel by laying a
+   striped light board across it and watching the lines bend. The handle is
+   that board, stood on its end. --------------------------------------------- */
+
+.divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  z-index: 4;
+  width: 0;
+  pointer-events: none;
+}
+
+.beam {
+  position: absolute;
+  inset-block: 0;
+  left: -1px;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgb(255 246 226 / 0.15),
+    var(--beam) 18%,
+    var(--beam) 82%,
+    rgb(255 246 226 / 0.15)
+  );
+  box-shadow: 0 0 14px rgb(255 246 226 / 0.35);
+}
+
+.board {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 68px;
+  padding: 0 8px;
+  border: 1px solid rgb(255 246 226 / 0.55);
+  border-radius: var(--r-2);
+  background: rgb(7 9 11 / 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.boardLine {
+  height: 2px;
+  border-radius: 1px;
+  background: var(--beam);
+  opacity: 0.9;
+}
+
+/* The middle line kinks, the way a reflection kinks over a dent. */
+.boardLine:nth-child(2) {
+  opacity: 0.55;
+}
+
+/* --- The scale ------------------------------------------------------------
+   An inspection tool has divisions on it. Ten of them across the top edge, a
+   longer one at each end and at the centre, and the position in figures beside
+   the handle — enough to say "this is a measurement", not so much that it
+   competes with the photograph underneath. -------------------------------- */
+
+.scale {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  padding-inline: 1px;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity var(--motion-normal) var(--ease-standard);
+}
+
+.tick {
+  width: 1px;
+  height: 6px;
+  background: var(--panel-dim);
+
+  &[data-major] {
+    height: 11px;
+  }
+}
+
+.readout {
+  position: absolute;
+  top: var(--s-4);
+  left: var(--pos);
+  z-index: 5;
+  translate: -50% 0;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--r-1);
+  background: rgb(7 9 11 / 0.8);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--beam);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+/* The figures only appear while the tool is in use. */
+.frame:hover .readout,
+.frame:has(.range:focus-visible) .readout,
+.frame:has(.range:active) .readout {
+  opacity: 1;
+}
+
+.frame:hover .scale {
+  opacity: 0.85;
+}
+
+.range {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  background: transparent;
+  opacity: 0;
+  cursor: ew-resize;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 44px;
+    height: 100%;
+  }
+
+  &::-moz-range-thumb {
+    width: 44px;
+    height: 100%;
+    border: 0;
+  }
+}
+
+/* The control is invisible, so its focus state has to be drawn on the frame. */
+.range:focus-visible {
+  outline: none;
+}
+
+.frame:has(.range:focus-visible) {
+  @include focus-ring;
+}
+
+.hint {
+  @include label;
+
+  position: absolute;
+  bottom: var(--s-4);
+  left: 50%;
+  translate: -50% 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--r-pill);
+  background: rgb(7 9 11 / 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--steel-300);
+  font-size: 0.625rem;
+  pointer-events: none;
+  transition: opacity var(--t-2) var(--e-out);
+}
+
+.hintHidden {
+  opacity: 0;
+}
+
+.caption {
+  color: var(--steel-400);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  max-width: 52ch;
+}

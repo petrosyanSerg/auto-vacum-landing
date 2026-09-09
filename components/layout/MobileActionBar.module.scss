@@ -1,0 +1,94 @@
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 1px;
+  padding: 0 0 env(safe-area-inset-bottom, 0px);
+  background: var(--hair);
+  border-top: 1px solid var(--hair);
+
+  @include from(lg) {
+    display: none;
+  }
+}
+
+.action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--actionbar-h);
+  padding: 0.5rem 0.35rem;
+  background: var(--ink-900);
+  color: var(--steel-300);
+  text-decoration: none;
+
+  &:active {
+    background: var(--ink-850);
+  }
+}
+
+/* The call is the reason the bar exists, so it is the only filled cell. */
+.primary {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+  color: var(--ink-950);
+  font-weight: 800;
+
+  &:active {
+    background: var(--panel-dim);
+  }
+
+  // A line of light crosses the cell about once every twelve seconds. It is the
+  // one piece of unprompted motion on the site, it is on the one control that
+  // matters, and at this contrast it is noticed peripherally rather than
+  // watched. Anyone who has asked for less motion gets none of it.
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: -35%;
+    width: 35%;
+    background: linear-gradient(90deg, transparent, rgb(7 9 11 / 0.1), transparent);
+    transform: skewX(-16deg);
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &::after {
+      animation: bar-sweep 12s var(--ease-standard) 4s infinite;
+    }
+  }
+}
+
+@keyframes bar-sweep {
+  0% {
+    left: -35%;
+  }
+  9% {
+    left: 105%;
+  }
+  100% {
+    left: 105%;
+  }
+}
+
+.label {
+  @include label;
+
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+}
+
+.number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}

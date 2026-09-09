@@ -1,0 +1,101 @@
+/* The five steps under the process diagram. The step matching the stage the
+   diagram is showing lights its tick and lifts its body copy, so the drawing
+   and the words are never out of step with each other. */
+.steps {
+  display: grid;
+  gap: 0;
+  grid-template-columns: 1fr;
+
+  @include from(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include from(lg) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.step {
+  position: relative;
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--hair);
+
+  @include from(md) {
+    padding: var(--s-5) var(--s-5) var(--s-5) 0;
+
+    &:not(:last-child) {
+      border-right: 1px solid var(--hair);
+    }
+
+    &:not(:first-child) {
+      padding-left: var(--s-5);
+    }
+  }
+
+  // The tick where this step meets the line above it. It runs the width of
+  // the step while that step is the one being shown.
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 22px;
+    height: 1px;
+    background: var(--beam);
+    opacity: 0.85;
+    transition: width var(--motion-slow) var(--ease-smooth);
+  }
+
+  &[data-current]::before {
+    width: 100%;
+  }
+
+  @include from(md) {
+    &:not(:first-child)::before {
+      left: var(--s-5);
+    }
+  }
+}
+
+.index {
+  @include label;
+
+  color: var(--steel-500);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  transition: color var(--motion-fast) var(--ease-standard);
+
+  .step[data-current] & {
+    color: var(--beam);
+  }
+}
+
+.stepTitle {
+  font-size: var(--fs-h4);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.stepBody {
+  color: var(--steel-400);
+  font-size: var(--fs-small);
+  line-height: 1.65;
+  transition: color var(--motion-normal) var(--ease-standard);
+
+  .step[data-current] & {
+    color: var(--steel-300);
+  }
+}
+
+.note {
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--hair);
+  color: var(--steel-400);
+  font-size: var(--fs-small);
+  max-width: 68ch;
+}

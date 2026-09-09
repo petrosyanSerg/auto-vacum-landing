@@ -1,0 +1,137 @@
+.button {
+  --btn-py: 0.8rem;
+  --btn-px: 1.4rem;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: var(--btn-py) var(--btn-px);
+  border: 1px solid transparent;
+  border-radius: var(--r-1);
+  font-weight: 700;
+  font-size: var(--fs-body);
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background-color var(--t-1) var(--e-out),
+    border-color var(--t-1) var(--e-out),
+    color var(--t-1) var(--e-out),
+    transform var(--t-1) var(--e-out);
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  // The reflection line, as a microinteraction: a 1px band of light sweeps
+  // across the button on hover, the same read a technician takes off a panel.
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    left: -30%;
+    width: 30%;
+    background: linear-gradient(90deg, transparent, var(--beam-soft), transparent);
+    transform: skewX(-18deg);
+    opacity: 0;
+    z-index: -1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &:hover::after,
+    &:focus-visible::after {
+      opacity: 1;
+      animation: sweep 620ms var(--e-out);
+    }
+  }
+}
+
+@keyframes sweep {
+  from {
+    left: -30%;
+  }
+  to {
+    left: 105%;
+  }
+}
+
+.lg {
+  --btn-py: 1.05rem;
+  --btn-px: 1.75rem;
+  font-size: var(--fs-lead);
+}
+
+.sm {
+  --btn-py: 0.55rem;
+  --btn-px: 0.95rem;
+  font-size: var(--fs-small);
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+/* Solid — reserved for the single most important action on any screen: the
+   call. Bare panel white is the highest contrast the palette can produce. */
+.solid {
+  background: var(--panel);
+  color: var(--ink-950);
+  border-color: var(--panel);
+
+  &:hover {
+    background: #fff;
+    border-color: #fff;
+  }
+
+  &::after {
+    background: linear-gradient(90deg, transparent, rgb(7 9 11 / 0.09), transparent);
+  }
+}
+
+.outline {
+  background: transparent;
+  color: var(--panel);
+  border-color: var(--hair-strong);
+
+  &:hover {
+    border-color: var(--panel);
+    background: rgb(238 242 245 / 0.04);
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: var(--steel-300);
+  border-color: transparent;
+  padding-inline: 0.4rem;
+
+  &:hover {
+    color: var(--panel);
+  }
+}
+
+.icon {
+  flex: none;
+  transition: translate var(--motion-normal) var(--ease-smooth);
+}
+
+// The handset lifts very slightly as the pointer arrives. It is the smallest
+// signal available that says "this places a call" rather than "this opens a
+// page", on the one control the whole site is built around.
+.button:hover .icon,
+.button:focus-visible .icon {
+  translate: 0 -1.5px;
+}
+
+/* The phone number itself is set in the technical face — it reads as data, and
+   the tabular figures keep it from wobbling between locales. */
+.number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}

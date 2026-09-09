@@ -1,0 +1,56 @@
+// ---------------------------------------------------------------------------
+// Abstracts: breakpoints and mixins.
+//
+// Auto-injected into every stylesheet by next.config.ts, so modules get these
+// without importing them. Must emit no CSS of its own.
+// ---------------------------------------------------------------------------
+
+@use "sass:map";
+
+$bp: (
+  sm: 480px,
+  md: 720px,
+  lg: 960px,
+  xl: 1200px,
+  xxl: 1440px,
+);
+
+@mixin from($name) {
+  @media (min-width: map.get($bp, $name)) { @content; }
+}
+
+@mixin upto($name) {
+  @media (max-width: (map.get($bp, $name) - 0.02px)) { @content; }
+}
+
+/// Page container with fluid gutters.
+@mixin container($width: var(--w-page)) {
+  width: 100%;
+  max-width: $width;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/// Vertical rhythm for a top-level section.
+@mixin section {
+  padding-block: var(--section-y);
+}
+
+/// The technical label: eyebrows, codes, counters, captions. Set in the mono
+/// face so numerals and labels read as data rather than as prose.
+@mixin label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+/// The focus ring. The global rule in globals.scss covers every standard
+/// control; this exists for the few places that draw the ring on a wrapper
+/// because the real control is visually hidden — the comparison slider.
+@mixin focus-ring($offset: 3px) {
+  outline: 2px solid var(--focus);
+  outline-offset: $offset;
+}

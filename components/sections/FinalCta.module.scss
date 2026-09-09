@@ -1,0 +1,62 @@
+.section {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(3.5rem, 8vw, 7rem);
+  background: var(--ink-950);
+}
+
+.field {
+  z-index: 0;
+  opacity: 0.9;
+}
+
+.inner {
+  @include container;
+
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--s-6);
+  justify-items: center;
+  text-align: center;
+}
+
+.label {
+  @include label;
+
+  color: var(--steel-500);
+}
+
+.title {
+  font-size: var(--fs-display-2);
+  max-width: 18ch;
+}
+
+.lead {
+  color: var(--steel-300);
+  font-size: var(--fs-lead);
+  max-width: 48ch;
+}
+
+.actions {
+  display: grid;
+  gap: var(--s-3);
+  width: 100%;
+  max-width: 30rem;
+
+  @include from(sm) {
+    grid-auto-flow: column;
+    justify-content: center;
+    width: auto;
+    max-width: none;
+  }
+}
+
+.secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-5);
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--s-2);
+}

@@ -1,0 +1,68 @@
+/* ---------------------------------------------------------------------------
+   The lamp.
+
+   Nothing here does anything until the component sets data-armed, which it only
+   does for a fine pointer with motion allowed. Everywhere else this is an inert
+   wrapper: no listeners attached, no compositor layers, no cost.
+   --------------------------------------------------------------------------- */
+
+.host {
+  --px: 0.5;
+  --py: 0.5;
+
+  position: relative;
+}
+
+.tilt {
+  transform: none;
+}
+
+/* The band of light. Warm, wide and soft — a strip lamp seen in paint, not a
+   highlight drawn on top of it. `screen` keeps it out of the shadows, so it
+   reads as reflected light rather than as a white veil over the photograph. */
+.sheen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  aspect-ratio: var(--ba-aspect, 4 / 5);
+  border-radius: var(--r-2);
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    100deg,
+    transparent calc(var(--px) * 100% - 26%),
+    rgb(255 246 226 / 0.05) calc(var(--px) * 100% - 12%),
+    rgb(255 246 226 / 0.14) calc(var(--px) * 100%),
+    rgb(255 246 226 / 0.05) calc(var(--px) * 100% + 12%),
+    transparent calc(var(--px) * 100% + 26%)
+  );
+  transition: opacity var(--motion-slow) var(--ease-smooth);
+}
+
+.host[data-armed][data-lit] .sheen {
+  opacity: 1;
+}
+
+/* The frame tips toward the lamp. Barely more than a degree: enough that the
+   surface reads as a physical thing being turned to the light, not enough to
+   move anything the visitor is trying to click. */
+@media (prefers-reduced-motion: no-preference) {
+  .host[data-armed] {
+    perspective: 1400px;
+  }
+
+  .host[data-armed] .tilt {
+    transform: rotateY(calc((var(--px) - 0.5) * 2.4deg))
+      rotateX(calc((0.5 - var(--py)) * 1.6deg));
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform var(--motion-slow) var(--ease-smooth);
+  }
+
+  // Following the pointer has to be immediate; returning to rest can ease.
+  .host[data-armed][data-lit] .tilt {
+    transition: transform var(--motion-fast) linear;
+  }
+}

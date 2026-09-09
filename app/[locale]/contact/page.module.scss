@@ -1,0 +1,78 @@
+.split {
+  display: grid;
+  gap: var(--s-7);
+
+  @include from(lg) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+}
+
+.channels {
+  display: grid;
+  gap: var(--s-5);
+  align-content: start;
+}
+
+.blockTitle {
+  @include label;
+
+  color: var(--steel-500);
+}
+
+.phoneRow {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+
+.phone {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.6rem);
+  letter-spacing: -0.01em;
+  color: var(--panel);
+  text-decoration: none;
+  justify-self: start;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.address {
+  font-style: normal;
+  color: var(--steel-300);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+}
+
+.links {
+  display: grid;
+  gap: var(--s-3);
+
+  @include from(sm) {
+    grid-auto-flow: column;
+    justify-content: start;
+  }
+}
+
+.formCol {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.formLead {
+  color: var(--steel-300);
+  font-size: var(--fs-small);
+  line-height: 1.65;
+  max-width: 52ch;
+}
+
+.formTitle {
+  font-size: var(--fs-display-3);
+}
