@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-import { isLocale, locales, localePath, type Locale } from '@/lib/i18n/config';
+import { isLocale, locales, localePath } from '@/lib/i18n/config';
 import { getDictionary } from '@/lib/i18n/dictionaries';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath, servicePath } from '@/lib/i18n/routes';
@@ -18,6 +18,7 @@ import { ButtonLink } from '@/components/ui/Button';
 import { Section, sectionStyles } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { WorksGrid } from '@/components/gallery/WorksGrid';
+import { worksGridCopy } from '@/components/gallery/WorksGrid.copy';
 import { Faq } from '@/components/sections/Faq';
 import { Location } from '@/components/sections/Location';
 import { FinalCta } from '@/components/sections/FinalCta';
@@ -60,22 +61,24 @@ export default async function ServicePage({
   const { locale, slug } = await params;
   if (!isLocale(locale) || !isServiceSlug(slug)) notFound();
 
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
+  const dict = getDictionary(locale);
   const service = dict.services[slug];
 
   const examples = works.slice(0, 4);
   const others = serviceSlugs.filter((s) => s !== slug);
 
+  const trail = [
+    { name: dict.nav.home, path: routePath.home },
+    { name: dict.servicesSection.h1, path: routePath.services },
+    { name: service.name, path: servicePath(slug) },
+  ];
+
   return (
     <>
       <PageHeader
-        locale={typedLocale}
+        locale={locale}
         dict={dict}
-        trail={[
-          { name: dict.nav.home, path: routePath.home },
-          { name: dict.servicesSection.h1, path: routePath.services },
-        ]}
+        trail={trail}
         title={service.h1}
         lead={service.summary}
       >
@@ -116,11 +119,11 @@ export default async function ServicePage({
 
           <div className={styles.actions}>
             <CallButton label={dict.common.callWithNumber} ariaLabel={dict.common.callAria} block />
-            <ButtonLink href={localePath(typedLocale, routePath.contact)} variant="outline" block>
+            <ButtonLink href={localePath(locale, routePath.contact)} variant="outline" block>
               {dict.contact.formTitle}
             </ButtonLink>
             <p className={styles.blockTitle}>
-              {ADDRESS.streetAddress[typedLocale]}, {ADDRESS.addressLocality[typedLocale]}
+              {ADDRESS.streetAddress[locale]}, {ADDRESS.addressLocality[locale]}
             </p>
           </div>
         </aside>
@@ -134,9 +137,9 @@ export default async function ServicePage({
           id="service-works"
           wide
         />
-        <WorksGrid items={examples} dict={dict} />
+        <WorksGrid items={examples} copy={worksGridCopy(dict, examples)} />
         <div className={sectionStyles.foot}>
-          <ButtonLink href={localePath(typedLocale, routePath.works)} variant="outline">
+          <ButtonLink href={localePath(locale, routePath.works)} variant="outline">
             {dict.works.allCta}
           </ButtonLink>
         </div>
@@ -154,7 +157,7 @@ export default async function ServicePage({
           {others.map((other) => (
             <ButtonLink
               key={other}
-              href={localePath(typedLocale, servicePath(other))}
+              href={localePath(locale, servicePath(other))}
               variant="outline"
             >
               {dict.services[other].name}
@@ -163,25 +166,21 @@ export default async function ServicePage({
         </div>
       </Section>
 
-      <Location locale={typedLocale} dict={dict} />
-      <FinalCta locale={typedLocale} dict={dict} />
+      <Location locale={locale} dict={dict} />
+      <FinalCta locale={locale} dict={dict} />
 
       <JsonLd
         data={[
           webPageSchema({
-            locale: typedLocale,
+            locale,
             path: servicePath(slug),
             name: service.h1,
             description: service.metaDescription,
             primaryImage: `/images/works/${serviceImage[slug]}.webp`,
           }),
-          serviceSchema(typedLocale, slug),
+          serviceSchema(locale, slug),
           faqSchema(service.faq),
-          breadcrumbSchema(typedLocale, [
-            { name: dict.nav.home, path: routePath.home },
-            { name: dict.servicesSection.h1, path: routePath.services },
-            { name: service.name, path: servicePath(slug) },
-          ]),
+          breadcrumbSchema(locale, trail),
         ]}
       />
     </>

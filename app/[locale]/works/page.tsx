@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
-import { isLocale, locales, type Locale } from '@/lib/i18n/config';
-import { getDictionary } from '@/lib/i18n/dictionaries';
+import { resolveLocaleMeta, resolveLocalePage, type LocaleParams } from '@/lib/i18n/page';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
 import { breadcrumbSchema, videoListSchema, webPageSchema, worksGallerySchema } from '@/lib/seo/jsonld';
@@ -12,25 +10,20 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { CallButton } from '@/components/ui/CallButton';
 import { WorksGrid } from '@/components/gallery/WorksGrid';
+import { worksGridCopy } from '@/components/gallery/WorksGrid.copy';
 import { Videos } from '@/components/sections/Videos';
 import { Location } from '@/components/sections/Location';
 import { FinalCta } from '@/components/sections/FinalCta';
 import { Section } from '@/components/ui/Section';
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-  const dict = getDictionary(locale);
+  const resolved = await resolveLocaleMeta(params);
+  if (!resolved) return {};
+  const { locale, dict } = resolved;
 
   return buildMetadata({
     locale,
@@ -40,19 +33,20 @@ export async function generateMetadata({
   });
 }
 
-export default async function WorksPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+export default async function WorksPage({ params }: { params: LocaleParams }) {
+  const { locale, dict } = await resolveLocalePage(params);
 
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
+  const trail = [
+    { name: dict.nav.home, path: routePath.home },
+    { name: dict.works.h1, path: routePath.works },
+  ];
 
   return (
     <>
       <PageHeader
-        locale={typedLocale}
+        locale={locale}
         dict={dict}
-        trail={[{ name: dict.nav.home, path: routePath.home }]}
+        trail={trail}
         title={dict.works.h1}
         lead={dict.works.pageLead}
       >
@@ -60,29 +54,26 @@ export default async function WorksPage({ params }: { params: Promise<{ locale: 
       </PageHeader>
 
       <Section label={dict.works.h1}>
-        <WorksGrid items={works} dict={dict} filterable />
+        <WorksGrid items={works} copy={worksGridCopy(dict, works)} filterable />
       </Section>
 
       <Videos dict={dict} />
-      <Location locale={typedLocale} dict={dict} />
-      <FinalCta locale={typedLocale} dict={dict} />
+      <Location locale={locale} dict={dict} />
+      <FinalCta locale={locale} dict={dict} />
 
       <JsonLd
         data={[
           webPageSchema({
-            locale: typedLocale,
+            locale,
             path: routePath.works,
             name: dict.works.h1,
             description: dict.works.metaDescription,
             type: 'CollectionPage',
             primaryImage: '/images/works/roof-panel-restored.webp',
           }),
-          worksGallerySchema(typedLocale),
-          breadcrumbSchema(typedLocale, [
-            { name: dict.nav.home, path: routePath.home },
-            { name: dict.works.h1, path: routePath.works },
-          ]),
-          videoListSchema(typedLocale),
+          worksGallerySchema(locale),
+          breadcrumbSchema(locale, trail),
+          videoListSchema(locale),
         ]}
       />
     </>

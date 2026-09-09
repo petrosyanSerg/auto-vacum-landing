@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
-import { isLocale, locales, type Locale } from '@/lib/i18n/config';
-import { getDictionary } from '@/lib/i18n/dictionaries';
+import { resolveLocaleMeta, resolveLocalePage, type LocaleParams } from '@/lib/i18n/page';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
 import { breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/seo/jsonld';
@@ -15,20 +13,14 @@ import { Faq } from '@/components/sections/Faq';
 import { Location } from '@/components/sections/Location';
 import { FinalCta } from '@/components/sections/FinalCta';
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-  const dict = getDictionary(locale);
+  const resolved = await resolveLocaleMeta(params);
+  if (!resolved) return {};
+  const { locale, dict } = resolved;
 
   return buildMetadata({
     locale,
@@ -43,24 +35,25 @@ export async function generateMetadata({
  * document. This is the page most likely to be quoted by an answer engine, so
  * each answer is written to stand alone out of context.
  */
-export default async function FaqPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
+export default async function FaqPage({ params }: { params: LocaleParams }) {
+  const { locale, dict } = await resolveLocalePage(params);
 
   const allQuestions = [
     ...dict.faq.items,
     ...serviceSlugs.flatMap((slug) => dict.services[slug].faq),
   ];
 
+  const trail = [
+    { name: dict.nav.home, path: routePath.home },
+    { name: dict.faq.h1, path: routePath.faq },
+  ];
+
   return (
     <>
       <PageHeader
-        locale={typedLocale}
+        locale={locale}
         dict={dict}
-        trail={[{ name: dict.nav.home, path: routePath.home }]}
+        trail={trail}
         title={dict.faq.h1}
         lead={dict.faq.pageLead}
       >
@@ -68,22 +61,19 @@ export default async function FaqPage({ params }: { params: Promise<{ locale: st
       </PageHeader>
 
       <Faq dict={dict} items={allQuestions} />
-      <Location locale={typedLocale} dict={dict} />
-      <FinalCta locale={typedLocale} dict={dict} />
+      <Location locale={locale} dict={dict} />
+      <FinalCta locale={locale} dict={dict} />
 
       <JsonLd
         data={[
           webPageSchema({
-            locale: typedLocale,
+            locale,
             path: routePath.faq,
             name: dict.faq.h1,
             description: dict.faq.metaDescription,
           }),
           faqSchema(allQuestions),
-          breadcrumbSchema(typedLocale, [
-            { name: dict.nav.home, path: routePath.home },
-            { name: dict.faq.h1, path: routePath.faq },
-          ]),
+          breadcrumbSchema(locale, trail),
         ]}
       />
     </>

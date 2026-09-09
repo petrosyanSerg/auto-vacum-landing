@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
-import { isLocale, type Locale } from '@/lib/i18n/config';
-import { getDictionary } from '@/lib/i18n/dictionaries';
+import { resolveLocaleMeta, resolveLocalePage, type LocaleParams } from '@/lib/i18n/page';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
 import { faqSchema, videoListSchema, webPageSchema } from '@/lib/seo/jsonld';
@@ -23,11 +21,11 @@ import { FinalCta } from '@/components/sections/FinalCta';
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-  const dict = getDictionary(locale);
+  const resolved = await resolveLocaleMeta(params);
+  if (!resolved) return {};
+  const { locale, dict } = resolved;
 
   return buildMetadata({
     locale,
@@ -44,38 +42,34 @@ export async function generateMetadata({
  * matters (why), what we take on (damage), the questions everyone asks (FAQ),
  * where we are (location), and the number (CTA).
  */
-export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
+export default async function HomePage({ params }: { params: LocaleParams }) {
+  const { locale, dict } = await resolveLocalePage(params);
 
   return (
     <>
-      <Hero locale={typedLocale} dict={dict} />
+      <Hero locale={locale} dict={dict} />
       <Trust dict={dict} />
-      <Services locale={typedLocale} dict={dict} />
-      <Proof locale={typedLocale} dict={dict} />
+      <Services locale={locale} dict={dict} />
+      <Proof locale={locale} dict={dict} />
       <Videos dict={dict} />
       <Process dict={dict} />
       <Why dict={dict} />
       <Damage dict={dict} />
       <Faq dict={dict} />
-      <Location locale={typedLocale} dict={dict} />
-      <FinalCta locale={typedLocale} dict={dict} />
+      <Location locale={locale} dict={dict} />
+      <FinalCta locale={locale} dict={dict} />
 
       <JsonLd
         data={[
           webPageSchema({
-            locale: typedLocale,
+            locale,
             path: routePath.home,
             name: `${dict.hero.h1} — ${dict.meta.siteName}`,
             description: dict.meta.defaultDescription,
             primaryImage: '/images/works/roof-panel-restored.webp',
           }),
           faqSchema(dict.faq.items),
-          videoListSchema(typedLocale),
+          videoListSchema(locale),
         ]}
       />
     </>

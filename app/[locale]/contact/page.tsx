@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
-import { isLocale, locales, type Locale } from '@/lib/i18n/config';
-import { getDictionary } from '@/lib/i18n/dictionaries';
+import { resolveLocaleMeta, resolveLocalePage, type LocaleParams } from '@/lib/i18n/page';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
 import { breadcrumbSchema, webPageSchema } from '@/lib/seo/jsonld';
@@ -25,20 +23,14 @@ import { Location } from '@/components/sections/Location';
 import { FinalCta } from '@/components/sections/FinalCta';
 import styles from './page.module.scss';
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-  const dict = getDictionary(locale);
+  const resolved = await resolveLocaleMeta(params);
+  if (!resolved) return {};
+  const { locale, dict } = resolved;
 
   return buildMetadata({
     locale,
@@ -48,22 +40,23 @@ export async function generateMetadata({
   });
 }
 
-export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
+export default async function ContactPage({ params }: { params: LocaleParams }) {
+  const { locale, dict } = await resolveLocalePage(params);
 
   // The form is live only when an inbox has actually been configured.
   const formEnabled = Boolean(LEAD_ENDPOINT);
 
+  const trail = [
+    { name: dict.nav.home, path: routePath.home },
+    { name: dict.contact.h1, path: routePath.contact },
+  ];
+
   return (
     <>
       <PageHeader
-        locale={typedLocale}
+        locale={locale}
         dict={dict}
-        trail={[{ name: dict.nav.home, path: routePath.home }]}
+        trail={trail}
         title={dict.contact.h1}
         lead={dict.contact.pageLead}
       />
@@ -84,9 +77,9 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
               {PHONE_DISPLAY}
             </a>
             <address className={styles.address}>
-              {ADDRESS.streetAddress[typedLocale]}
+              {ADDRESS.streetAddress[locale]}
               <br />
-              {ADDRESS.addressLocality[typedLocale]}, {ADDRESS.addressRegion[typedLocale]}
+              {ADDRESS.addressLocality[locale]}, {ADDRESS.addressRegion[locale]}
               <br />
               {dict.common.hoursUnknown}
             </address>
@@ -111,26 +104,23 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
         <div className={styles.formCol}>
           <h2 className={styles.formTitle}>{dict.contact.formTitle}</h2>
           <p className={styles.formLead}>{dict.contact.formLead}</p>
-          <PhotoAssessment dict={dict} enabled={formEnabled} />
+          <PhotoAssessment copy={dict.contact} enabled={formEnabled} />
         </div>
       </Section>
 
-      <Location locale={typedLocale} dict={dict} />
-      <FinalCta locale={typedLocale} dict={dict} />
+      <Location locale={locale} dict={dict} />
+      <FinalCta locale={locale} dict={dict} />
 
       <JsonLd
         data={[
           webPageSchema({
-            locale: typedLocale,
+            locale,
             path: routePath.contact,
             name: dict.contact.h1,
             description: dict.contact.metaDescription,
             type: 'ContactPage',
           }),
-          breadcrumbSchema(typedLocale, [
-            { name: dict.nav.home, path: routePath.home },
-            { name: dict.contact.h1, path: routePath.contact },
-          ]),
+          breadcrumbSchema(locale, trail),
         ]}
       />
     </>

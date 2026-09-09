@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
-import { isLocale, locales, type Locale } from '@/lib/i18n/config';
-import { getDictionary } from '@/lib/i18n/dictionaries';
+import { resolveLocaleMeta, resolveLocalePage, type LocaleParams } from '@/lib/i18n/page';
 import { buildMetadata } from '@/lib/seo/metadata';
 import { routePath } from '@/lib/i18n/routes';
 import { breadcrumbSchema, serviceSchema, webPageSchema } from '@/lib/seo/jsonld';
@@ -15,20 +13,14 @@ import { Process } from '@/components/sections/Process';
 import { Damage } from '@/components/sections/Damage';
 import { FinalCta } from '@/components/sections/FinalCta';
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-  const dict = getDictionary(locale);
+  const resolved = await resolveLocaleMeta(params);
+  if (!resolved) return {};
+  const { locale, dict } = resolved;
 
   return buildMetadata({
     locale,
@@ -41,45 +33,43 @@ export async function generateMetadata({
 export default async function ServicesPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+  const { locale, dict } = await resolveLocalePage(params);
 
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
+  const trail = [
+    { name: dict.nav.home, path: routePath.home },
+    { name: dict.servicesSection.h1, path: routePath.services },
+  ];
 
   return (
     <>
       <PageHeader
-        locale={typedLocale}
+        locale={locale}
         dict={dict}
-        trail={[{ name: dict.nav.home, path: routePath.home }]}
+        trail={trail}
         title={dict.servicesSection.h1}
         lead={dict.servicesSection.pageLead}
       >
         <CallButton label={dict.common.callWithNumber} ariaLabel={dict.common.callAria} />
       </PageHeader>
 
-      <Services locale={typedLocale} dict={dict} showAllLink={false} />
+      <Services locale={locale} dict={dict} showAllLink={false} />
       <Damage dict={dict} />
       <Process dict={dict} />
-      <FinalCta locale={typedLocale} dict={dict} />
+      <FinalCta locale={locale} dict={dict} />
 
       <JsonLd
         data={[
           webPageSchema({
-            locale: typedLocale,
+            locale,
             path: routePath.services,
             name: dict.servicesSection.h1,
             description: dict.servicesSection.metaDescription,
             type: 'CollectionPage',
           }),
-          breadcrumbSchema(typedLocale, [
-            { name: dict.nav.home, path: routePath.home },
-            { name: dict.servicesSection.h1, path: routePath.services },
-          ]),
-          ...serviceSlugs.map((slug) => serviceSchema(typedLocale, slug)),
+          breadcrumbSchema(locale, trail),
+          ...serviceSlugs.map((slug) => serviceSchema(locale, slug)),
         ]}
       />
     </>

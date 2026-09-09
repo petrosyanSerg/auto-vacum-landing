@@ -12,9 +12,12 @@ export interface Crumb {
 }
 
 /**
- * Shared masthead for inner pages: breadcrumb trail, H1 and lead. The trail is
- * the same array that feeds BreadcrumbList in the page's structured data, so
- * what a crawler reads and what a visitor sees cannot diverge.
+ * Shared masthead for inner pages: breadcrumb trail, H1 and lead.
+ *
+ * `trail` is the whole path including the current page, and it is the same
+ * array the page hands to BreadcrumbList, so what a crawler reads and what a
+ * visitor sees cannot diverge. The H1 stays a separate prop: a crumb is a short
+ * label, a heading is a sentence.
  */
 export function PageHeader({
   locale,
@@ -26,7 +29,7 @@ export function PageHeader({
 }: {
   locale: Locale;
   dict: Dictionary;
-  /** Ancestors only — the current page is added from `title`. */
+  /** The whole path, ending with the current page. */
   trail: Crumb[];
   title: string;
   lead?: string;
@@ -39,16 +42,23 @@ export function PageHeader({
       <div className={styles.inner}>
         <nav aria-label={dict.nav.breadcrumb}>
           <ol className={styles.crumbs}>
-            {trail.map((crumb) => (
-              <li key={crumb.path} className={styles.crumb}>
-                <Link href={localePath(locale, crumb.path)} className={styles.crumbLink}>
+            {trail.map((crumb, index) =>
+              index === trail.length - 1 ? (
+                <li
+                  key={crumb.path}
+                  className={`${styles.crumb} ${styles.current}`}
+                  aria-current="page"
+                >
                   {crumb.name}
-                </Link>
-              </li>
-            ))}
-            <li className={`${styles.crumb} ${styles.current}`} aria-current="page">
-              {title}
-            </li>
+                </li>
+              ) : (
+                <li key={crumb.path} className={styles.crumb}>
+                  <Link href={localePath(locale, crumb.path)} className={styles.crumbLink}>
+                    {crumb.name}
+                  </Link>
+                </li>
+              ),
+            )}
           </ol>
         </nav>
 

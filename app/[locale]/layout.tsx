@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { notFound } from 'next/navigation';
 import { Noto_Sans, Noto_Sans_Armenian, Noto_Sans_Georgian, JetBrains_Mono } from 'next/font/google';
 
 import '@/styles/globals.scss';
 
-import { isLocale, locales, localeMeta, type Locale } from '@/lib/i18n/config';
-import { getDictionary } from '@/lib/i18n/dictionaries';
+import { locales, localeMeta } from '@/lib/i18n/config';
+import { resolveLocaleMeta, resolveLocalePage, type LocaleParams } from '@/lib/i18n/page';
 import { buildRootMetadata } from '@/lib/seo/metadata';
 import { localBusinessSchema, websiteSchema } from '@/lib/seo/jsonld';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -63,11 +62,11 @@ export const viewport: Viewport = {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-  return buildRootMetadata(locale);
+  const resolved = await resolveLocaleMeta(params);
+  if (!resolved) return {};
+  return buildRootMetadata(resolved.locale);
 }
 
 export default async function LocaleLayout({
@@ -75,14 +74,10 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: LocaleParams;
 }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-
-  const typedLocale = locale as Locale;
-  const dict = getDictionary(typedLocale);
-  const meta = localeMeta[typedLocale];
+  const { locale, dict } = await resolveLocalePage(params);
+  const meta = localeMeta[locale];
 
   return (
     <html
@@ -95,17 +90,17 @@ export default async function LocaleLayout({
           {dict.nav.skipToContent}
         </a>
 
-        <Header locale={typedLocale} dict={dict} />
+        <Header locale={locale} dict={dict} />
 
         <main id="main">{children}</main>
 
-        <Footer locale={typedLocale} dict={dict} />
+        <Footer locale={locale} dict={dict} />
         <MobileActionBar dict={dict} />
 
         <SiteBehaviour />
         <Analytics />
 
-        <JsonLd data={[localBusinessSchema(typedLocale), websiteSchema(typedLocale)]} />
+        <JsonLd data={[localBusinessSchema(locale), websiteSchema(locale)]} />
       </body>
     </html>
   );
